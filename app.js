@@ -12,12 +12,18 @@ loadEventListeners();
 function loadEventListeners() {
   // Add task event
   form.addEventListener("submit", addTask);
+  //   Remove Task Event
+  taskList.addEventListener("click", removeTask);
+  //   Clear All Tasks Event
+  clearBtn.addEventListener("click", clearTasks);
+  //   Filter Tasks Event
+  filter.addEventListener("keyup", filterTasks);
 }
 
 // Add Task
 function addTask(e) {
   if (taskInput.value === "") {
-    alert("Bitch you need to add a task");
+    alert("Foo. You need to add a task!");
   }
 
   //   Create li element
@@ -31,7 +37,7 @@ function addTask(e) {
   // Add Class
   link.className = "delete-item secondary-content";
   // Add icon html
-  link.innerHTML = '<i class="fa fa-remove"></i>';
+  link.innerHTML = '<i class="fas fa-trash"></i>';
   //   Append link to li
   li.appendChild(link);
 
@@ -42,4 +48,37 @@ function addTask(e) {
   taskInput.value = "";
 
   e.preventDefault();
+}
+
+function removeTask(e) {
+  if (e.target.parentElement.classList.contains("delete-item")) {
+    if (confirm("Are you sure?")) {
+      e.target.parentElement.parentElement.remove();
+    }
+  }
+}
+
+function clearTasks() {
+  //   taskList.innerHTML = "";
+  //  And this ^^ isn't compatible with IE
+
+  // Faster with while loop/removeChild
+  // While there still is a first child
+  while (taskList.firstChild) {
+    taskList.removeChild(taskList.firstChild);
+  }
+}
+
+// Filter Tasks
+function filterTasks(e) {
+  const text = e.target.value.toLowerCase();
+
+  document.querySelectorAll(".collection-item").forEach(function (task) {
+    const item = task.firstChild.textContent;
+    if (item.toLowerCase().indexOf(text) != -1) {
+      task.style.display = "block";
+    } else {
+      task.style.display = "none";
+    }
+  });
 }
